@@ -47,7 +47,7 @@ expressApp.post("/webhook", webhook(framework));
 
 expressApp.get('/', (req, res) => res.send('Hello'));
 
-var server = app.listen(config.port, function() {
+var server = expressApp.listen(config.port, function() {
   framework.debug(`Framework listening on port ${config.port}`);
 });
 
