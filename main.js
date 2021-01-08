@@ -37,6 +37,11 @@ framework.on('spawn', function (bot, id, addedBy) {
   }
 });
 
+framework.hears('hello', function(bot, trigger) {
+  bot.say('Hello %s!', trigger.person.displayName);
+  responded = true;
+});
+
 /* Server stuff */
 server.post("/webhook", webhook(framework));
 
