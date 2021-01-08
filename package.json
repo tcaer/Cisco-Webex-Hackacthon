@@ -2,9 +2,10 @@
   "name": "cisco-webex-hackathon",
   "version": "1.0.0",
   "description": "",
-  "main": "webex.js",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/tcaer/Cisco-Webex-Hackathon/issues"
   },
-  "homepage": "https://github.com/tcaer/Cisco-Webex-Hackathon#readme"
+  "homepage": "https://github.com/tcaer/Cisco-Webex-Hackathon#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "webex-node-bot-framework": "^2.3.4"
+  }
 }
