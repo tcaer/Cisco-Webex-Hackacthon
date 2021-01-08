@@ -3,7 +3,7 @@ let Framework = require("webex-node-bot-framework");
 let webhook = require("webex-node-bot-framework/webhook");
 
 let express = require("express");
-let bodyParser = requrie("body-parser");
+let bodyParser = require("body-parser");
 
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
