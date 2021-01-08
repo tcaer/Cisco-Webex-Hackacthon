@@ -24,6 +24,7 @@ for(let a = 0; a < scheduled_flights.length; a++) {
     console.log(scheduled_flights[a]);
 }
 
+// Private
 function getData(ID_in, est_dep, est_arr) {
   return new Promise((resolve, reject) => {
     let flight = {
@@ -80,11 +81,11 @@ function getData(ID_in, est_dep, est_arr) {
 //Adds flight object to array of flights (scheduled flights)
 async function scheduleFlight(ID_in, est_dep, est_arr) {
 
-    /*let flight = {
+    let flight = {
         ID: ID_in,
         departure: est_dep,
         arrival: est_arr
-    }
+    }/*
 
     let found = false;
 
@@ -128,12 +129,14 @@ async function scheduleFlight(ID_in, est_dep, est_arr) {
         console.log("Error: " + err.message);
       });*/
 
-  getData(ID_in, est_dep, est_arr)
+  /*getData(ID_in, est_dep, est_arr)
     .then((found) => console.log(found))
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err));*/
 
   try {
     let found = await getData(ID_in, est_dep, est_arr);
+
+    scheduled_flights.push(flight);
 
     console.log(found);
   } catch(err) {
@@ -141,11 +144,11 @@ async function scheduleFlight(ID_in, est_dep, est_arr) {
   }
 
   //Add flight object to the array of flights
-  if(found) {
+  /*if(found) {
     scheduled_flights.push(flight);
   }else {
     console.log("Flight ID: " + flight.ID + " not found");
-  }
+  }*/
 }
 
 //after adding flights, everytime user wants to see schedule, update is called
@@ -216,4 +219,7 @@ function updateFlights() {
   
 }
 
-
+module.exports = {
+  scheduleFlight,
+  updateFlights
+}
