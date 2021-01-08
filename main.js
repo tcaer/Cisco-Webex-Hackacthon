@@ -37,8 +37,15 @@ framework.on('spawn', function (bot, id, addedBy) {
   }
 });
 
+framework.hears('hello', function(bot, trigger) {
+  bot.say('Hello %s!', trigger.person.displayName);
+  responded = true;
+});
+
 /* Server stuff */
 server.post("/webhook", webhook(framework));
+
+server.get('/', (req, res) => res.send('Hello'));
 
 var server = app.listen(config.port, function() {
   framework.debug(`Framework listening on port ${config.port}`);
