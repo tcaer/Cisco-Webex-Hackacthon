@@ -43,9 +43,9 @@ framework.hears('hello', function(bot, trigger) {
 });
 
 /* Server stuff */
-server.post("/webhook", webhook(framework));
+expressApp.post("/webhook", webhook(framework));
 
-server.get('/', (req, res) => res.send('Hello'));
+expressApp.get('/', (req, res) => res.send('Hello'));
 
 var server = app.listen(config.port, function() {
   framework.debug(`Framework listening on port ${config.port}`);
