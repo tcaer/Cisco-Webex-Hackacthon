@@ -4,6 +4,7 @@ let webhook = require("webex-node-bot-framework/webhook");
 
 let express = require("express");
 let bodyParser = require("body-parser");
+let path = require('path');
 
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
@@ -46,6 +47,10 @@ framework.hears('hello', function(bot, trigger) {
 expressApp.post("/webhook", webhook(framework));
 
 expressApp.get('/', (req, res) => res.send('Hello'));
+
+expressApp.get('/calendar', (req, res) => {
+  res.sendFile(path.join(__dirname, '/views/calendar.html'));
+});
 
 var server = expressApp.listen(config.port, function() {
   framework.debug(`Framework listening on port ${config.port}`);
