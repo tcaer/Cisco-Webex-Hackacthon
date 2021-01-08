@@ -15,7 +15,7 @@ expressApp.use(bodyParser.json());
 const config = {
   webhookUrl: process.env.BOT_WEBHOOK,
   token: process.env.BOT_ACCESS_TOKEN,
-  port: 80 // Server runs at :8080
+  port: process.env.PORT || 8080 // Server runs at :8080
 };
 
 var framework = new Framework(config);
