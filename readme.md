@@ -3,6 +3,7 @@
 2. `npm i`
 3. Acquire credentials for the `.env` file from someone who has them
 4. `npm start`
+5. Web server running at `localhost:8080`
 
 # Deployment
 1. Heroku automatically pulls the latest production branch build

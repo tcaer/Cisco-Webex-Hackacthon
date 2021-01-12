@@ -48,6 +48,7 @@ expressApp.post("/webhook", webhook(framework));
 
 expressApp.get('/', (req, res) => res.send('Hello'));
 
+// localhost:8080/calendar, http://whatever.com/calendar
 expressApp.get('/calendar', (req, res) => {
   res.sendFile(path.join(__dirname, '/views/calendar.html'));
 });
