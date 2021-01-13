@@ -5,40 +5,6 @@ let webhook = require("webex-node-bot-framework/webhook");
 let express = require("express");
 let bodyParser = require("body-parser");
 
-const cardBody = {
-  "type": "AdaptiveCard",
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "version": "1.0",
-  "body": [
-      {
-          "type": "TextBlock",
-          "text": "Depart Date",
-          "wrap": true
-      },
-      {
-          "type": "Input.Date"
-      },
-      {
-          "type": "TextBlock",
-          "text": "Return flight",
-          "wrap": true
-      },
-      {
-          "type": "Input.Date"
-      },
-      {
-          "type": "Input.Text",
-          "placeholder": "Flight number"
-      }
-  ],
-  "actions": [
-    {
-      "type": "Action.Submit",
-      "title": "Submit"
-    }
-  ]
-};
-
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
 
@@ -81,13 +47,7 @@ expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
-  bot.sendCard({
-    attachments: cardBody
-  });
-});
-
-framework.on('attachmentAction', function (bot, trigger) {
-  bot.say(`Got an attachmentAction:\n${JSON.stringify(trigger.attachmentAction, null, 2)}`);
+  bot.send('Submit a new flight here: %s', "https://shrouded-dusk-67323.herokuapp.com/newflight");
 });
 
 /* Server stuff */
