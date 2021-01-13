@@ -47,7 +47,7 @@ expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
-  bot.send('Submit a new flight here: %s', "https://shrouded-dusk-67323.herokuapp.com/newflight");
+  bot.say("Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight)");
 });
 
 /* Server stuff */
