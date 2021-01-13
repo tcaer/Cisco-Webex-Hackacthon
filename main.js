@@ -6,8 +6,8 @@ let express = require("express");
 let bodyParser = require("body-parser");
 
 const cardBody = {
-  "type": "AdaptiveCard",
   "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
   "version": "1.0",
   "body": [
       {
@@ -82,7 +82,8 @@ expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
   bot.sendCard({
-    attachments: cardBody
+    attachments: cardBody,
+    markdown: "# Fallback"
   });
 });
 
