@@ -49,8 +49,7 @@ expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
-  bot.say("Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight)");
-  bot.sendCard(cardBody, "Fallback");
+  bot.say("markdown", "Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight)");
 });
 
 
