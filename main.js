@@ -4,40 +4,10 @@ let webhook = require("webex-node-bot-framework/webhook");
 
 let express = require("express");
 let bodyParser = require("body-parser");
+let path = require("path");
+let fs = require("fs");
 
-const cardBody = {
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "type": "AdaptiveCard",
-  "version": "1.0",
-  "body": [
-      {
-          "type": "TextBlock",
-          "text": "Depart Date",
-          "wrap": true
-      },
-      {
-          "type": "Input.Date"
-      },
-      {
-          "type": "TextBlock",
-          "text": "Return flight",
-          "wrap": true
-      },
-      {
-          "type": "Input.Date"
-      },
-      {
-          "type": "Input.Text",
-          "placeholder": "Flight number"
-      }
-  ],
-  "actions": [
-    {
-      "type": "Action.Submit",
-      "title": "Submit"
-    }
-  ]
-};
+const cardBody = JSON.parse(fs.readFileSync(path.join(__dirname, "/config/flightcard.json")));
 
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
@@ -81,10 +51,7 @@ expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
-  bot.sendCard({
-    attachments: cardBody,
-    markdown: "# Fallback"
-  });
+  bot.sendCard(cardBody, "Fallback");
 });
 
 framework.on('attachmentAction', function (bot, trigger) {
