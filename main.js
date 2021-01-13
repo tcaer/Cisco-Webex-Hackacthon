@@ -4,6 +4,8 @@ let webhook = require("webex-node-bot-framework/webhook");
 
 let express = require("express");
 let bodyParser = require("body-parser");
+let path = require("path");
+let fs = require("fs");
 
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
@@ -48,7 +50,9 @@ expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
   bot.say("Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight)");
+  bot.sendCard(cardBody, "Fallback");
 });
+
 
 /* Server stuff */
 expressApp.post("/webhook", webhook(framework));
