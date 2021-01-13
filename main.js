@@ -7,8 +7,6 @@ let bodyParser = require("body-parser");
 let path = require("path");
 let fs = require("fs");
 
-const cardBody = JSON.parse(fs.readFileSync(path.join(__dirname, "/config/flightcard.json")));
-
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
 
@@ -51,18 +49,33 @@ expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
+  bot.say("Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight)");
   bot.sendCard(cardBody, "Fallback");
 });
 
-framework.on('attachmentAction', function (bot, trigger) {
-  console.log(JSON.stringify(trigger.attachmentAction.inputs));
-  bot.say(`Got an attachmentAction:\n${JSON.stringify(trigger.attachmentAction.inputs)}`);
-});
 
 /* Server stuff */
 expressApp.post("/webhook", webhook(framework));
 
 expressApp.get('/', (req, res) => res.send('Hello'));
+
+expressApp.get("/newflight", (req, res) => {
+  let spaceId = req.query.spaceId;
+
+  res.render("form", { spaceId });
+});
+
+expressApp.post("/submit", (req, res) => {
+  console.log(req.body);
+
+  const { departure, arrival, flightnumber, spaceId } = req.body;
+
+  let departureDate = new Date(departure); // use .getTime() to get the date in milliseconds since 1970
+  let arrivalDate = new Date(arrival); // use .getTime() to get the date in milliseconds since 1970
+
+  // Record the information
+  res.send("Your data has been recorded! You may now close this tab");
+});
 
 // localhost:8080/calendar, http://whatever.com/calendar
 var user = "bob";
