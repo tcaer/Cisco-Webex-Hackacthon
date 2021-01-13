@@ -69,8 +69,10 @@ expressApp.post("/submit", (req, res) => {
 
   const { departure, arrival, flightnumber, spaceId } = req.body;
 
-  let departureDate = new Date(departure); // use .getTime() to get the date in milliseconds since 1970
-  let arrivalDate = new Date(arrival); // use .getTime() to get the date in milliseconds since 1970
+  let departureDate = new Date(departure).getTime()/1000; // use .getTime() to get the date in milliseconds since 1970
+  let arrivalDate = new Date(arrival).getTime/1000; // use .getTime() to get the date in milliseconds since 1970
+
+  console.log(departureDate);
 
   // Record the information
   res.send("Your data has been recorded! You may now close this tab");
