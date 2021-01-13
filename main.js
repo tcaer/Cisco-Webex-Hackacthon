@@ -43,7 +43,11 @@ framework.hears('hello', function(bot, trigger) {
   responded = true;
 });
 
-//framework.hears(schedyke)
+framework.hears('schedule', function(bot, trigger) {
+  bot.say('Hello %s!', "");
+});
+
+
 
 
 //template engine
