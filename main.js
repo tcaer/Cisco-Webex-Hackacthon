@@ -95,6 +95,24 @@ expressApp.post("/webhook", webhook(framework));
 
 expressApp.get('/', (req, res) => res.send('Hello'));
 
+expressApp.get("/newflight", (req, res) => {
+  let spaceId = req.query.spaceId;
+
+  res.render("form", { spaceId });
+});
+
+expressApp.post("/submit", (req, res) => {
+  console.log(req.body);
+
+  const { departure, arrival, flightnumber, spaceId } = req.body;
+
+  let departureDate = new Date(departure); // use .getTime() to get the date in milliseconds since 1970
+  let arrivalDate = new Date(arrival); // use .getTime() to get the date in milliseconds since 1970
+
+  // Record the information
+  res.send("Your data has been recorded! You may now close this tab");
+});
+
 // localhost:8080/calendar, http://whatever.com/calendar
 var user = "bob";
 
