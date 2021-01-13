@@ -46,6 +46,10 @@ framework.hears('hello', function(bot, trigger) {
   responded = true;
 });
 
+
+expressApp.use(express.static('public'));
+expressApp.set('view engine', 'ejs');
+
 framework.hears("schedule", function(bot, trigger) {
   bot.sendCard({
     attachments: cardBody
@@ -62,8 +66,14 @@ expressApp.post("/webhook", webhook(framework));
 expressApp.get('/', (req, res) => res.send('Hello'));
 
 // localhost:8080/calendar, http://whatever.com/calendar
+var user = "bob";
+
 expressApp.get('/calendar', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/calendar.html'));
+  //static calendr without flight data
+  // res.sendFile(path.join(__dirname, '/views/calendar.html'));
+
+  res.render('calendar', { username: user });
+
 });
 
 var server = expressApp.listen(config.port, function() {
