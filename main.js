@@ -5,6 +5,9 @@ let webhook = require("webex-node-bot-framework/webhook");
 let express = require("express");
 let bodyParser = require("body-parser");
 let path = require('path');
+let fs = require("fs");
+
+const cardBody = JSON.parse(fs.readFileSync(path.join(__dirname, "/config/flightcard.json")));
 
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
@@ -43,16 +46,19 @@ framework.hears('hello', function(bot, trigger) {
   responded = true;
 });
 
-framework.hears('schedule', function(bot, trigger) {
-  bot.say('Hello %s!', "");
-});
 
-
-
-
-//template engine
 expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
+
+framework.hears("schedule", function(bot, trigger) {
+  bot.sendCard({
+    attachments: cardBody
+  });
+});
+
+framework.on('attachmentAction', function (bot, trigger) {
+  bot.say(`Got an attachmentAction:\n${JSON.stringify(trigger.attachmentAction, null, 2)}`);
+});
 
 /* Server stuff */
 expressApp.post("/webhook", webhook(framework));
