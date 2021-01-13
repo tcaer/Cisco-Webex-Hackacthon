@@ -1,0 +1,33 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+      {
+          "type": "TextBlock",
+          "text": "Depart Date",
+          "wrap": true
+      },
+      {
+          "type": "Input.Date"
+      },
+      {
+          "type": "TextBlock",
+          "text": "Return flight",
+          "wrap": true
+      },
+      {
+          "type": "Input.Date"
+      },
+      {
+          "type": "Input.Text",
+          "placeholder": "Flight number"
+      }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Submit"
+    }
+  ]
+}
