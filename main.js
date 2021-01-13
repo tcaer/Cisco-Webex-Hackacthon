@@ -4,40 +4,8 @@ let webhook = require("webex-node-bot-framework/webhook");
 
 let express = require("express");
 let bodyParser = require("body-parser");
-
-const cardBody = {
-  "type": "AdaptiveCard",
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "version": "1.0",
-  "body": [
-      {
-          "type": "TextBlock",
-          "text": "Depart Date",
-          "wrap": true
-      },
-      {
-          "type": "Input.Date"
-      },
-      {
-          "type": "TextBlock",
-          "text": "Return flight",
-          "wrap": true
-      },
-      {
-          "type": "Input.Date"
-      },
-      {
-          "type": "Input.Text",
-          "placeholder": "Flight number"
-      }
-  ],
-  "actions": [
-    {
-      "type": "Action.Submit",
-      "title": "Submit"
-    }
-  ]
-};
+let path = require("path");
+let fs = require("fs");
 
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
@@ -81,19 +49,32 @@ expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
-  bot.sendCard({
-    attachments: cardBody
-  });
+  bot.say("markdown", "Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight)");
 });
 
-framework.on('attachmentAction', function (bot, trigger) {
-  bot.say(`Got an attachmentAction:\n${JSON.stringify(trigger.attachmentAction, null, 2)}`);
-});
 
 /* Server stuff */
 expressApp.post("/webhook", webhook(framework));
 
 expressApp.get('/', (req, res) => res.send('Hello'));
+
+expressApp.get("/newflight", (req, res) => {
+  let spaceId = req.query.spaceId;
+
+  res.render("form", { spaceId });
+});
+
+expressApp.post("/submit", (req, res) => {
+  console.log(req.body);
+
+  const { departure, arrival, flightnumber, spaceId } = req.body;
+
+  let departureDate = new Date(departure); // use .getTime() to get the date in milliseconds since 1970
+  let arrivalDate = new Date(arrival); // use .getTime() to get the date in milliseconds since 1970
+
+  // Record the information
+  res.send("Your data has been recorded! You may now close this tab");
+});
 
 // localhost:8080/calendar, http://whatever.com/calendar
 var user = "bob";
