@@ -55,7 +55,8 @@ framework.hears("schedule", function(bot, trigger) {
 });
 
 framework.on('attachmentAction', function (bot, trigger) {
-  bot.say(`Got an attachmentAction:\n${JSON.stringify(trigger.attachmentAction.inputs, null, 2)}`);
+  console.log(JSON.stringify(trigger.attachmentAction.inputs));
+  bot.say(`Got an attachmentAction:\n${JSON.stringify(trigger.attachmentAction.inputs)}`);
 });
 
 /* Server stuff */
