@@ -5,6 +5,13 @@ const https = require("https");
 
 scheduled_flights = [];
 
+
+
+//var s = new Date(1331209044000).toISOString();
+
+//unix to iso that calendar uses
+
+
 // console.log(Math.floor(new Date().getTime()/1000.0) );
 
 const Stream = require("stream").Transform;
