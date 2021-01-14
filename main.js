@@ -52,11 +52,10 @@ framework.hears('hello', function(bot, trigger) {
 
 expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
-
 framework.hears("schedule", function(bot, trigger) {
   bot.say(
-    "markdown", 
-    `Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight?name=${trigger.person.displayName})`
+    "markdown",
+    "Submit a new flight [here](" + encodeURI("https://shrouded-dusk-67323.herokuapp.com/newflight?name="+trigger.person.displayName) + ")"
   );
 });
 
