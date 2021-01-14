@@ -13,10 +13,10 @@ const fs = require("fs");
 let ID = "N4278H  ";
 let est_dep = 1609715691;
 
-(async () => {
+/*(async () => {
   await scheduleFlight(ID, est_dep, est_dep + 10800);
   updateFlights();
-})();
+})();*/
 
 //print out the flights that have been scheduled
 for(let a = 0; a < scheduled_flights.length; a++) {
@@ -148,18 +148,15 @@ async function scheduleFlight(ID_in, est_dep, est_arr, displayName) {
     .then((found) => console.log(found))
     .catch((err) => console.log(err));*/
 
-  try {
-    let found = await getData(ID_in, est_dep, est_arr, flight);
-
-    if (found[0]) {
-      scheduled_flights.push(found[1]);
-    }
-
-    
-
-  } catch(err) {
-    console.log(err);
-  }
+  return new Promise((resolve, reject) => {
+    getData(ID_in, est_dep, est_arr, flight)
+      .then(found => {
+        if (found[0]) return resolve(found[1]);
+        
+        reject();
+      })
+      .catch(err => reject(err));
+  });
 
   //Add flight object to the array of flights
   /*if(found) {
