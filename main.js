@@ -55,7 +55,7 @@ expressApp.set('view engine', 'ejs');
 framework.hears("schedule", function(bot, trigger) {
   bot.say(
     "markdown",
-    "Submit a new flight [here](" + encodeURI("https://shrouded-dusk-67323.herokuapp.com/newflight?name="+trigger.person.displayName) + ")"
+    "Submit a new flight [here](" + encodeURI("https://shrouded-dusk-67323.herokuapp.com/newflight?displayName="+trigger.person.displayName) + ")"
   );
 });
 
