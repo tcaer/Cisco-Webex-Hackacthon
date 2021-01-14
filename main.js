@@ -75,7 +75,7 @@ expressApp.get("/newflight", (req, res) => {
 expressApp.post("/submit", async (req, res) => {
   // console.log(req.body);
 
-  let { departure, arrival, flightnumber, spaceId } = req.body;
+  let { departure, arrival, flightnumber, spaceId, displayName } = req.body;
 
   // console.log(typeof departure);
 
