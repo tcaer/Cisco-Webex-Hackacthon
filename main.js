@@ -7,6 +7,11 @@ let bodyParser = require("body-parser");
 let path = require("path");
 let fs = require("fs");
 
+let opensky = require("./webex");
+
+
+
+
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
 
@@ -49,7 +54,10 @@ expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
-  bot.say("markdown", "Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight)");
+  bot.say(
+    "markdown", 
+    `Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight?name=${trigger.person.displayName})`
+  );
 });
 
 
@@ -59,23 +67,124 @@ expressApp.post("/webhook", webhook(framework));
 expressApp.get('/', (req, res) => res.send('Hello'));
 
 expressApp.get("/newflight", (req, res) => {
-  let spaceId = req.query.spaceId;
+  let { spaceId, displayName } = req.query;
 
-  res.render("form", { spaceId });
+  res.render("form", { spaceId, displayName });
 });
 
-expressApp.post("/submit", (req, res) => {
-  console.log(req.body);
+expressApp.post("/submit", async (req, res) => {
+  // console.log(req.body);
 
-  const { departure, arrival, flightnumber, spaceId } = req.body;
+  let { departure, arrival, flightnumber, spaceId, displayName } = req.body;
 
-  let departureDate = new Date(departure).getTime()/1000; // use .getTime() to get the date in milliseconds since 1970
-  let arrivalDate = new Date(arrival).getTime()/1000; // use .getTime() to get the date in milliseconds since 1970
+  // console.log(typeof departure);
 
-  console.log(departureDate);
+  let departure_unix = new Date(departure).getTime()/1000; // use .getTime() to get the date in milliseconds since 1970
+  let arrival_unix = new Date(arrival).getTime()/1000; // use .getTime() to get the date in milliseconds since 1970
+
+  // console.log(flightnumber);
+
+  let l = flightnumber.length;
+
+  for (let i = l; i < 8; i++) {
+    flightnumber += " ";
+  }
+
+  // console.log(opensky.scheduled_flights.length);
+
+  await opensky.scheduleFlight(flightnumber, departure_unix, arrival_unix);
+
+  // console.log(opensky.scheduled_flights.length);
+
+  // console.log(opensky.scheduled_flights[0].arrival);
+
+  // console.log(flightnumber.length);
+
+  let events = [];
+
+  let color = ['blue', 'red', 'green'];
+
+  for (let i = 0; i < opensky.scheduled_flights.length; i++) {
+    
+    
+    let event_template = {
+      id: '2',
+      calendarId: '1',
+      title: 'yo',
+      category: 'time',
+      dueDateClass: '',
+      start: '2021-01-21T17:30:00+09:00',
+      end: '2021-01-22T17:31:00+09:00',
+      isReadOnly: true,   // schedule is read-only
+      bgColor: 'red'
+    }
+
+    event_template.start = new Date(opensky.scheduled_flights[i].departure * 1000).toISOString();
+
+    event_template.end = new Date(opensky.scheduled_flights[i].arrival * 1000).toISOString();
+
+    event_template.title = "Example Name";
+
+    // event_template.bgColor = color[getRandomInt(color.length)];
+
+
+    events.push(event_template);
+
+  }
+
+  // let event = [
+        
+  //   {
+  //       id: '2',
+  //       calendarId: '1',
+  //       title: 'yo',
+  //       category: 'time',
+  //       dueDateClass: '',
+  //       start: '2021-01-21T17:30:00+09:00',
+  //       end: '2021-01-22T17:31:00+09:00',
+  //       isReadOnly: true    // schedule is read-only
+  //   },
+
+  //   {
+  //   id: '1',
+  //   calendarId: '2',
+  //   title: 'second schedule',
+  //   category: 'time',
+  //   dueDateClass: '',
+  //   start: '2021-01-14T17:30:00+09:00',
+  //   end: '2021-01-15T17:31:00+09:00',
+  //   isReadOnly: true
+  // }
+
+
+
+
+
+let event_string = JSON.stringify(events);
+
+console.log(event_string);
+
+
+
+  // opensky.scheduled_flights()
+
+  //trim string call sign to be certain number of characters, convert every flight json into a json array of "events" with ISO times, 
+  //stringify this json array, and use calendar.ejs 
+  //to populate calendar
+
+//   
+
+// console.log(opensky.scheduled_flights.length);
 
   // Record the information
-  res.send("Your data has been recorded! You may now close this tab");
+
+  //instead of sending blank html file with this response
+  // res.send("Your data has been recorded! You may now close this tab");
+
+  //send calendar
+
+
+  res.render('calendar', { event: event_string });
 });
 
 // localhost:8080/calendar, http://whatever.com/calendar
