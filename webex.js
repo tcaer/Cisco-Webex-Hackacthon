@@ -84,6 +84,10 @@ function getData(ID_in, est_dep, est_arr) {
   });
 }
 
+function getHi(ID_in, est_dep, est_arr) {
+  console.log("hi");
+}
+
 //Creates flight object given a flight ID and an estimated depature time in UNIX time
 //Adds flight object to array of flights (scheduled flights)
 async function scheduleFlight(ID_in, est_dep, est_arr) {
@@ -228,5 +232,6 @@ function updateFlights() {
 
 module.exports = {
   scheduleFlight,
-  updateFlights
+  updateFlights,
+  scheduled_flights
 }
