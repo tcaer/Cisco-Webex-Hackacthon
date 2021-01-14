@@ -72,9 +72,12 @@ expressApp.get("/newflight", (req, res) => {
 });
 
 expressApp.post("/submit", async (req, res) => {
+  
   // console.log(req.body);
 
   let { departure, arrival, flightnumber, spaceId, displayName } = req.body;
+
+  // console.log(displayName);
 
   // console.log(typeof departure);
 
@@ -91,7 +94,7 @@ expressApp.post("/submit", async (req, res) => {
 
   // console.log(opensky.scheduled_flights.length);
 
-  await opensky.scheduleFlight(flightnumber, departure_unix, arrival_unix);
+  await opensky.scheduleFlight(flightnumber, departure_unix, arrival_unix, displayName);
 
   // console.log(opensky.scheduled_flights.length);
 
@@ -115,16 +118,20 @@ expressApp.post("/submit", async (req, res) => {
       start: '2021-01-21T17:30:00+09:00',
       end: '2021-01-22T17:31:00+09:00',
       isReadOnly: true,   // schedule is read-only
-      bgColor: 'red'
+      bgColor: '#bbdc00'
     }
 
     event_template.start = new Date(opensky.scheduled_flights[i].departure * 1000).toISOString();
 
     event_template.end = new Date(opensky.scheduled_flights[i].arrival * 1000).toISOString();
 
-    event_template.title = "Example Name";
+    console.log(scheduled_flights[i].arr_airport);
+    console.log("hi ethan");
+    console.log(scheduled_flights[i].dep_airport);
 
-    // event_template.bgColor = color[getRandomInt(color.length)];
+    event_template.title = displayName + ' ' + scheduled_flights[i].arr_airport + '->' + ' ' + scheduled_flights[i].dep_airport;
+
+    event_template.bgColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
 
 
     events.push(event_template);
