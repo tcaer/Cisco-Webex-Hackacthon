@@ -54,7 +54,10 @@ expressApp.use(express.static('public'));
 expressApp.set('view engine', 'ejs');
 
 framework.hears("schedule", function(bot, trigger) {
-  bot.say("markdown", "Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight)");
+  bot.say(
+    "markdown", 
+    `Submit a new flight [here](https://shrouded-dusk-67323.herokuapp.com/newflight?name=${trigger.person.displayName})`
+  );
 });
 
 
@@ -64,9 +67,9 @@ expressApp.post("/webhook", webhook(framework));
 expressApp.get('/', (req, res) => res.send('Hello'));
 
 expressApp.get("/newflight", (req, res) => {
-  let spaceId = req.query.spaceId;
+  let { spaceId, displayName } = req.query;
 
-  res.render("form", { spaceId });
+  res.render("form", { spaceId, displayName });
 });
 
 expressApp.post("/submit", async (req, res) => {
