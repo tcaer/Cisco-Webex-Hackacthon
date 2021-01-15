@@ -83,8 +83,6 @@ expressApp.post("/submit", async (req, res) => {
   let departure_unix = new Date(departure).getTime()/1000; // use .getTime() to get the date in milliseconds since 1970
   let arrival_unix = new Date(departure).getTime()/1000 + 10800; // use .getTime() to get the date in milliseconds since 1970
 
-  console.log(departure_unix);
-
   // console.log(flightnumber);
 
   let l = flightnumber.length;
@@ -170,9 +168,7 @@ expressApp.get('/calendar', (req, res) => {
 
   let color = ['blue', 'red', 'green'];
 
-  for (let i = 0; i < scheduled_flights.length; i++) {
-    console.log(scheduled_flights[i]);
-    
+  for (let i = 0; i < scheduled_flights.length; i++) {    
     let event_template = {
       id: '2',
       calendarId: '1',
@@ -188,10 +184,6 @@ expressApp.get('/calendar', (req, res) => {
     event_template.start = new Date(scheduled_flights[i].departure * 1000).toISOString();
 
     event_template.end = new Date(scheduled_flights[i].arrival * 1000).toISOString();
-
-    console.log(scheduled_flights[i].arr_airport);
-    console.log("hi ethan");
-    console.log(scheduled_flights[i].dep_airport);
 
     event_template.title = scheduled_flights[i].displayName + ' ' + scheduled_flights[i].arr_airport + '->' + ' ' + scheduled_flights[i].dep_airport;
 

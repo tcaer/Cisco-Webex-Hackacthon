@@ -30,7 +30,10 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
     <script src="https://trentrichardson.com/examples/timepicker/jquery-ui-timepicker-addon.js"></script>
     <script>
-      $("#departure").datetimepicker({controlType: 'select'});
+      $("#departure").datetimepicker({
+        controlType: 'select',
+        format: 'DD/MM/YYYY hh:mm:ss'
+      });
     </script>
   </body>
 </html>

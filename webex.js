@@ -51,10 +51,12 @@ function getData(ID_in, est_dep, est_arr, flight) {
         // The whole response has been received. Print out the result.
         resp.on("end", () => {
           let parsed = JSON.parse(data);
+
+          console.log(ID_in);
           
           //loop through the list of api flights, search for the flight ID
           for (let i = 0; i < parsed.length; i++) {
-            if (parsed[i].callsign == ID) {
+            if (parsed[i].callsign == ID_in) {
 
                 // console.log(parsed[i].estDepartureAirport);
 
