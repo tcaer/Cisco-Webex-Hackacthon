@@ -6,14 +6,6 @@ const https = require("https");
 scheduled_flights = [];
 
 
-
-//var s = new Date(1331209044000).toISOString();
-
-//unix to iso that calendar uses
-
-
-// console.log(Math.floor(new Date().getTime()/1000.0) );
-
 const Stream = require("stream").Transform;
 const fs = require("fs");
 
@@ -21,10 +13,10 @@ const fs = require("fs");
 let ID = "N4278H  ";
 let est_dep = 1609715691;
 
-(async () => {
+/*(async () => {
   await scheduleFlight(ID, est_dep, est_dep + 10800);
   updateFlights();
-})();
+})();*/
 
 //print out the flights that have been scheduled
 for(let a = 0; a < scheduled_flights.length; a++) {
@@ -32,18 +24,13 @@ for(let a = 0; a < scheduled_flights.length; a++) {
 }
 
 // Private
-function getData(ID_in, est_dep, est_arr) {
+function getData(ID_in, est_dep, est_arr, flight) {
   return new Promise((resolve, reject) => {
-    let flight = {
-      ID: ID_in,
-      departure: est_dep,
-      arrival: est_arr
-    }
 
     let found = false;
 
-    let begin =  est_dep;
-    let end = est_dep + 7200;
+    let begin =  flight.departure;
+    let end = begin + 7200;
 
     //search through api for the flight
     let url = "https://opensky-network.org/api/flights/all?";
@@ -64,17 +51,32 @@ function getData(ID_in, est_dep, est_arr) {
         // The whole response has been received. Print out the result.
         resp.on("end", () => {
           let parsed = JSON.parse(data);
+
+          console.log(ID_in);
           
           //loop through the list of api flights, search for the flight ID
           for (let i = 0; i < parsed.length; i++) {
-            if (parsed[i].callsign == ID) {
-              resolve(true);
+            if (parsed[i].callsign == ID_in) {
+
+                // console.log(parsed[i].estDepartureAirport);
+
+                // console.log(parsed[i].estArrivalAirport);
+
+                flight.dep_airport = parsed[i].estDepartureAirport;
+
+                flight.arr_airport = parsed[i].estArrivalAirport;
+
+                // console.log(flight.dep_airport);
+
+                // console.log(flight.arr_airport);
+
+              resolve([true, flight]);
 
               break;
             }
           }
 
-          resolve(false);
+          resolve([false, null]);
       })
       .on("error", err => {
         console.log("Error: " + err.message);
@@ -90,12 +92,16 @@ function getHi(ID_in, est_dep, est_arr) {
 
 //Creates flight object given a flight ID and an estimated depature time in UNIX time
 //Adds flight object to array of flights (scheduled flights)
-async function scheduleFlight(ID_in, est_dep, est_arr) {
+async function scheduleFlight(ID_in, est_dep, est_arr, displayName) {
 
     let flight = {
         ID: ID_in,
         departure: est_dep,
-        arrival: est_arr
+        arrival: est_arr,
+        name: displayName,
+        arr_airport: "",
+        dep_airport: ""
+
     }/*
 
     let found = false;
@@ -144,15 +150,15 @@ async function scheduleFlight(ID_in, est_dep, est_arr) {
     .then((found) => console.log(found))
     .catch((err) => console.log(err));*/
 
-  try {
-    let found = await getData(ID_in, est_dep, est_arr);
-
-    scheduled_flights.push(flight);
-
-    console.log(found);
-  } catch(err) {
-    console.log(err);
-  }
+  return new Promise((resolve, reject) => {
+    getData(ID_in, est_dep, est_arr, flight)
+      .then(found => {
+        if (found[0]) return resolve(found[1]);
+        
+        reject();
+      })
+      .catch(err => reject(err));
+  });
 
   //Add flight object to the array of flights
   /*if(found) {

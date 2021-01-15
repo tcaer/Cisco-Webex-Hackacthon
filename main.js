@@ -9,8 +9,7 @@ let fs = require("fs");
 
 let opensky = require("./webex");
 
-
-
+scheduled_flights = [];
 
 // The server that will accept webhooks and host the calendar
 var expressApp = express();
@@ -72,14 +71,17 @@ expressApp.get("/newflight", (req, res) => {
 });
 
 expressApp.post("/submit", async (req, res) => {
+  
   // console.log(req.body);
 
   let { departure, arrival, flightnumber, spaceId, displayName } = req.body;
 
+  // console.log(displayName);
+
   // console.log(typeof departure);
 
   let departure_unix = new Date(departure).getTime()/1000; // use .getTime() to get the date in milliseconds since 1970
-  let arrival_unix = new Date(arrival).getTime()/1000; // use .getTime() to get the date in milliseconds since 1970
+  let arrival_unix = new Date(departure).getTime()/1000 + 10800; // use .getTime() to get the date in milliseconds since 1970
 
   // console.log(flightnumber);
 
@@ -91,7 +93,19 @@ expressApp.post("/submit", async (req, res) => {
 
   // console.log(opensky.scheduled_flights.length);
 
-  await opensky.scheduleFlight(flightnumber, departure_unix, arrival_unix);
+  try {
+    let flight = await opensky.scheduleFlight(flightnumber, departure_unix, arrival_unix, displayName);
+
+    if (flight != null) {
+      scheduled_flights.push(flight);
+      flight.displayName = displayName;
+    }
+
+    res.redirect("/calendar");
+  } catch (err) {
+    console.error(err);
+    return res.send("Failed to schedule flight. Try again.");
+  }
 
   // console.log(opensky.scheduled_flights.length);
 
@@ -99,37 +113,6 @@ expressApp.post("/submit", async (req, res) => {
 
   // console.log(flightnumber.length);
 
-  let events = [];
-
-  let color = ['blue', 'red', 'green'];
-
-  for (let i = 0; i < opensky.scheduled_flights.length; i++) {
-    
-    
-    let event_template = {
-      id: '2',
-      calendarId: '1',
-      title: 'yo',
-      category: 'time',
-      dueDateClass: '',
-      start: '2021-01-21T17:30:00+09:00',
-      end: '2021-01-22T17:31:00+09:00',
-      isReadOnly: true,   // schedule is read-only
-      bgColor: 'red'
-    }
-
-    event_template.start = new Date(opensky.scheduled_flights[i].departure * 1000).toISOString();
-
-    event_template.end = new Date(opensky.scheduled_flights[i].arrival * 1000).toISOString();
-
-    event_template.title = "Example Name";
-
-    // event_template.bgColor = color[getRandomInt(color.length)];
-
-
-    events.push(event_template);
-
-  }
 
   // let event = [
         
@@ -156,15 +139,6 @@ expressApp.post("/submit", async (req, res) => {
   // }
 
 
-
-
-
-let event_string = JSON.stringify(events);
-
-console.log(event_string);
-
-
-
   // opensky.scheduled_flights()
 
   //trim string call sign to be certain number of characters, convert every flight json into a json array of "events" with ISO times, 
@@ -181,9 +155,6 @@ console.log(event_string);
   // res.send("Your data has been recorded! You may now close this tab");
 
   //send calendar
-
-
-  res.render('calendar', { event: event_string });
 });
 
 // localhost:8080/calendar, http://whatever.com/calendar
@@ -193,8 +164,39 @@ expressApp.get('/calendar', (req, res) => {
   //static calendr without flight data
   // res.sendFile(path.join(__dirname, '/views/calendar.html'));
 
-  res.render('calendar', { username: user });
+  let events = [];
 
+  let color = ['blue', 'red', 'green'];
+
+  for (let i = 0; i < scheduled_flights.length; i++) {    
+    let event_template = {
+      id: '2',
+      calendarId: '1',
+      title: 'yo',
+      category: 'time',
+      dueDateClass: '',
+      start: '2021-01-21T17:30:00+09:00',
+      end: '2021-01-22T17:31:00+09:00',
+      isReadOnly: true,   // schedule is read-only
+      bgColor: '#bbdc00'
+    }
+
+    event_template.start = new Date(scheduled_flights[i].departure * 1000).toISOString();
+
+    event_template.end = new Date(scheduled_flights[i].arrival * 1000).toISOString();
+
+    event_template.title = scheduled_flights[i].displayName + ' ' + scheduled_flights[i].arr_airport + '->' + ' ' + scheduled_flights[i].dep_airport;
+
+    event_template.bgColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+
+
+    events.push(event_template);
+
+  }
+
+  let event_string = JSON.stringify(events);
+
+  res.render('calendar', { event: event_string });
 });
 
 var server = expressApp.listen(config.port, function() {
